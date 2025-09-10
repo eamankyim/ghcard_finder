@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  INTAKE_OFFICER
+  VIEWER
+}
+
+enum CardType {
+  GHANA_CARD
+  DRIVERS_LICENSE
+  VOTER_ID
+  NHIS
+  PASSPORT
+}
+
+enum CardStatus {
+  AVAILABLE
+  CLAIMED
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  COLLECTED
+  EXPIRED
+}
+
+model User {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String?  @unique
+  passwordHash String
+  role        Role     @default(INTAKE_OFFICER)
+  lastLogin   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  handledClaims Claim[] @relation("HandledBy")
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  region    String
+  phone     String?
+  hours     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cards     Card[]
+}
+
+model Card {
+  id               String     @id @default(cuid())
+  cardType         CardType
+  fullId           String
+  maskedPublicId   String
+  firstName        String
+  lastName         String
+  dob              DateTime
+  gender           String?
+  imageUrl         String?
+  foundDate        DateTime   @default(now())
+  status           CardStatus @default(AVAILABLE)
+  claimedAt        DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  holdingLocationId String
+  holdingLocation   Location  @relation(fields: [holdingLocationId], references: [id])
+
+  claims           Claim[]
+
+  @@unique([cardType, fullId])
+  @@index([lastName, firstName])
+  @@index([dob])
+}
+
+model Claim {
+  id            String      @id @default(cuid())
+  cardId        String
+  card          Card        @relation(fields: [cardId], references: [id])
+  contactEmail  String?
+  contactPhone  String?
+  referenceCode String      @unique
+  otpCode       String?
+  otpExpiresAt  DateTime?
+  status        ClaimStatus @default(PENDING)
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  handledById   String?
+  handledBy     User?       @relation("HandledBy", fields: [handledById], references: [id])
+
+  @@index([cardId])
+}
