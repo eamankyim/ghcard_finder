@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import { publicRouter } from './routes/public';
+import { staffRouter } from './routes/staff';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/public', publicRouter);
+app.use('/api/staff', staffRouter);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

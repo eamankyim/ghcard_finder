@@ -51,7 +51,7 @@ model User {
 
 model Location {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   address   String
   region    String
   phone     String?
