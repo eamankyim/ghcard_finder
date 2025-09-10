@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Tabs, Form, Input, Select, DatePicker, Button, List, Typography, Space, message, Row, Col, Card } from 'antd'
+import { useState } from 'react'
+import { Tabs, Form, Input, Select, DatePicker, Button, List, Typography, Space, message, Card } from 'antd'
 import dayjs from 'dayjs'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -30,13 +30,6 @@ function SearchPage() {
 	const [results, setResults] = useState<CardResult[]>([])
 	const [formId] = Form.useForm()
 	const [formPerson] = Form.useForm()
-
-	const years = useMemo(() => {
-		const y: number[] = []
-		const now = new Date().getFullYear()
-		for (let i = now; i >= 1900; i--) y.push(i)
-		return y
-	}, [])
 
 	async function searchById(values: any) {
 		setLoading(true)

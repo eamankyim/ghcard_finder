@@ -1,6 +1,6 @@
 import { Typography, Button, Row, Col } from 'antd'
 import { Link } from 'react-router-dom'
-import { SearchOutlined, SafetyOutlined, IdcardOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons'
+import { SearchOutlined, SafetyOutlined } from '@ant-design/icons'
 import heroImage from '../assets/images/compressed-original.webp'
 
 const { Title, Paragraph } = Typography
